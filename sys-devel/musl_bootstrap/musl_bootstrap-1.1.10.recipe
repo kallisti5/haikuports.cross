@@ -1,0 +1,50 @@
+SUMMARY="A stable, clean, and consistant libc implementation"
+DESCRIPTION="
+Provides a stable clean-room libc implementation.
+"
+HOMEPAGE="http://musl-libc.org"
+SOURCE_URI="http://www.musl-libc.org/releases/musl-1.1.10.tar.gz"
+CHECKSUM_SHA256="45bbe9b1c7f7a0f743477af1e103b6889bfe4dd9815e16f6c89f6c90831c8b7c"
+SOURCE_DIR="$portVersionedName"
+REVISION="1"
+LICENSE="MIT"
+COPYRIGHT="2005-2014 Rich Felker, et al."
+
+ARCHITECTURES="x86 x86_64 arm ppc"
+
+PROVIDES="
+	musl_bootstrap$secondaryArchSuffix = $portVersion compat >= 1
+	devel:libc
+	devel:libcrypt
+	devel:libdl
+	devel:libm
+	devel:libpthread
+	devel:libresolv
+	devel:librt
+	devel:libutil
+	devel:libxnet
+	"
+REQUIRES="
+	haiku$secondaryArchSuffix
+	"
+BUILD_REQUIRES="
+	haiku${secondaryArchSuffix}_devel
+	"
+BUILD_PREREQUIRES="
+	cmd:make
+	cmd:gcc$secondaryArchSuffix
+	"
+
+BUILD()
+{
+	runConfigure ./configure --disable-shared
+	make $jobArgs
+}
+
+INSTALL()
+{
+	make install
+	prepareInstalledDevelLibs \
+		libc libcrypt libdl libm libpthread \
+		libresolv librt libutil libxnet
+}
